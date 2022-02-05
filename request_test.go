@@ -4,8 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"testing"
-	"trv"
 
+	"github.com/mlu1109/trv"
 	"github.com/stretchr/testify/assert"
 )
 

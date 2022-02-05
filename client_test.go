@@ -3,8 +3,8 @@ package trv_test
 import (
 	"os"
 	"testing"
-	"trv"
 
+	"github.com/mlu1109/trv"
 	"github.com/stretchr/testify/assert"
 )
 

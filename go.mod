@@ -1,4 +1,4 @@
-module trv
+module github.com/mlu1109/trv
 
 go 1.16
 
