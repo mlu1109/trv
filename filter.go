@@ -5,23 +5,23 @@ import (
 	"strconv"
 )
 
-// filter can be an operator (EQ, GT, ...) or a clause (AND, OR, ...).
+// Filter can be an operator (EQ, GT, ...) or a clause (AND, OR, ...).
 // Should be constructed with addOp or newOp
-type filter struct {
+type Filter struct {
 	XMLName xml.Name
 	Name    string `xml:"name,omitempty,attr"`
 	Value   string `xml:"value,omitempty,attr"`
 	Shape   string `xml:"shape,omitempty"`
 	Radius  string `xml:"radius,omitempty"`
-	Filters *filters
+	Filters *Filters
 }
 
-type filters []*filter
+type Filters []*Filter
 
 // Operators (EQ, GT, ...)
 
-func (f *filters) addOp(tag, name, value string) *filters {
-	*f = append(*f, &filter{
+func (f *Filters) addOp(tag, name, value string) *Filters {
+	*f = append(*f, &Filter{
 		XMLName: xml.Name{Local: tag},
 		Name:    name,
 		Value:   value,
@@ -29,52 +29,52 @@ func (f *filters) addOp(tag, name, value string) *filters {
 	return f
 }
 
-func (f *filters) AddEQ(name, value string) *filters {
+func (f *Filters) AddEQ(name, value string) *Filters {
 	return f.addOp("EQ", name, value)
 }
 
-func (f *filters) AddExists(name string, value bool) *filters {
+func (f *Filters) AddExists(name string, value bool) *Filters {
 	return f.addOp("EXISTS", name, strconv.FormatBool(value))
 }
 
-func (f *filters) AddGT(name, value string) *filters {
+func (f *Filters) AddGT(name, value string) *Filters {
 	return f.addOp("GT", name, value)
 }
 
-func (f *filters) AddGTE(name, value string) *filters {
+func (f *Filters) AddGTE(name, value string) *Filters {
 	return f.addOp("GTE", name, value)
 }
 
-func (f *filters) AddLT(name, value string) *filters {
+func (f *Filters) AddLT(name, value string) *Filters {
 	return f.addOp("LT", name, value)
 }
 
-func (f *filters) AddLTE(name, value string) *filters {
+func (f *Filters) AddLTE(name, value string) *Filters {
 	return f.addOp("LTE", name, value)
 }
 
-func (f *filters) AddNE(name, value string) *filters {
+func (f *Filters) AddNE(name, value string) *Filters {
 	return f.addOp("NE", name, value)
 }
 
-func (f *filters) AddLike(name, value string) *filters {
+func (f *Filters) AddLike(name, value string) *Filters {
 	return f.addOp("LIKE", name, value)
 }
 
-func (f *filters) AddNotLike(name, value string) *filters {
+func (f *Filters) AddNotLike(name, value string) *Filters {
 	return f.addOp("NOTLIKE", name, value)
 }
 
-func (f *filters) AddIn(name, value string) *filters {
+func (f *Filters) AddIn(name, value string) *Filters {
 	return f.addOp("IN", name, value)
 }
 
-func (f *filters) AddNotIn(name, value string) *filters {
+func (f *Filters) AddNotIn(name, value string) *Filters {
 	return f.addOp("NOTIN", name, value)
 }
 
-func (f *filters) AddWithin(name, value, shape, radius string) *filters {
-	*f = append(*f, &filter{
+func (f *Filters) AddWithin(name, value, shape, radius string) *Filters {
+	*f = append(*f, &Filter{
 		XMLName: xml.Name{Local: "WITHIN"},
 		Name:    name,
 		Value:   value,
@@ -84,37 +84,37 @@ func (f *filters) AddWithin(name, value, shape, radius string) *filters {
 	return f
 }
 
-func (f *filters) AddIntersects(name, value string) *filters {
+func (f *Filters) AddIntersects(name, value string) *Filters {
 	return f.addOp("INTERSECTS", name, value)
 }
 
-func (f *filters) AddNear(name, value string) *filters {
+func (f *Filters) AddNear(name, value string) *Filters {
 	return f.addOp("NEAR", name, value)
 }
 
 // Clauses (AND, OR, ...)
 
-func (f *filters) newOp(tag string) *filters {
-	newOp := &filters{}
-	*f = append(*f, &filter{
+func (f *Filters) newOp(tag string) *Filters {
+	newOp := &Filters{}
+	*f = append(*f, &Filter{
 		XMLName: xml.Name{Local: tag},
 		Filters: newOp,
 	})
 	return newOp
 }
 
-func (f *filters) NewOr() *filters {
+func (f *Filters) NewOr() *Filters {
 	return f.newOp("OR")
 }
 
-func (f *filters) NewAnd() *filters {
+func (f *Filters) NewAnd() *Filters {
 	return f.newOp("AND")
 }
 
-func (f *filters) NewElementMatch() *filters {
+func (f *Filters) NewElementMatch() *Filters {
 	return f.newOp("ELEMENTMATCH")
 }
 
-func (f *filters) NewNot() *filters {
+func (f *Filters) NewNot() *Filters {
 	return f.newOp("NOT")
 }

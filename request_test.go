@@ -9,22 +9,43 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRequestMarshalingOne(t *testing.T) {
-	authenticationKey := "yourauthenticationkey"
-	sseURL := true
-	objectType := "TrainAnnouncement"
-	orderBy := "AdvertisedTimeAtLocation"
-	schemaVersion := "1.3"
-	filterEQName := "AdvertisedTrainIdent"
-	filterEQValue := "129"
-	filterGTEName := "ScheduledDepartureDateTime"
-	filterGTEValue := "2019-05-07T00:00:00.000+02:00"
-	filterLTName := "ScheduledDepartureDateTime"
-	filterLTValue := "2019-05-08T00:00:00.000+02:00"
-	filterExistsName := "TimeAtLocation"
-	filterExistsValue := true
-	include := []string{"LocationSignature", "ActivityType", "AdvertisedTimeAtLocation", "TimeAtLocation", "ScheduledDepartureDateTime"}
-	expected := fmt.Sprintf(`<REQUEST>
+func TestRequest(t *testing.T) {
+	t.Run("TestMarshalRequest", func(t *testing.T) {
+		// Given
+		authenticationKey := "yourauthenticationkey"
+		sseURL := true
+		objectType := "TrainAnnouncement"
+		orderBy := "AdvertisedTimeAtLocation"
+		schemaVersion := "1.3"
+		filterEQName := "AdvertisedTrainIdent"
+		filterEQValue := "129"
+		filterGTEName := "ScheduledDepartureDateTime"
+		filterGTEValue := "2019-05-07T00:00:00.000+02:00"
+		filterLTName := "ScheduledDepartureDateTime"
+		filterLTValue := "2019-05-08T00:00:00.000+02:00"
+		filterExistsName := "TimeAtLocation"
+		filterExistsValue := true
+		include := []string{"LocationSignature", "ActivityType", "AdvertisedTimeAtLocation", "TimeAtLocation", "ScheduledDepartureDateTime"}
+		request := trv.NewRequest(authenticationKey)
+		query := request.
+			NewQuery(objectType, schemaVersion).
+			WithSSEURL(sseURL).
+			WithOrderBy(orderBy)
+		for _, value := range include {
+			query.AddInclude(value)
+		}
+		query.
+			NewFilter().
+			NewAnd().
+			AddEQ(filterEQName, filterEQValue).
+			AddGTE(filterGTEName, filterGTEValue).
+			AddLT(filterLTName, filterLTValue).
+			AddExists(filterExistsName, filterExistsValue)
+		// When
+		marshalled, err := xml.MarshalIndent(request, "", "\t")
+		actual := string(marshalled)
+		// Then
+		expected := fmt.Sprintf(`<REQUEST>
 	<LOGIN authenticationkey="%s"></LOGIN>
 	<QUERY sseurl="%t" objecttype="%s" orderby="%s" schemaversion="%s">
 		<FILTER>
@@ -42,29 +63,7 @@ func TestRequestMarshalingOne(t *testing.T) {
 		<INCLUDE>%s</INCLUDE>
 	</QUERY>
 </REQUEST>`, authenticationKey, sseURL, objectType, orderBy, schemaVersion, filterEQName, filterEQValue, filterGTEName, filterGTEValue, filterLTName, filterLTValue, filterExistsName, filterExistsValue, include[0], include[1], include[2], include[3], include[4])
-	// When
-	request := trv.NewRequest(authenticationKey)
-	query := request.
-		NewQuery(objectType, schemaVersion).
-		WithSSEURL(sseURL).
-		WithOrderBy(orderBy)
-	for _, value := range include {
-		query.AddInclude(value)
-	}
-	query.
-		NewFilter().
-		NewAnd().
-		AddEQ(filterEQName, filterEQValue).
-		AddGTE(filterGTEName, filterGTEValue).
-		AddLT(filterLTName, filterLTValue).
-		AddExists(filterExistsName, filterExistsValue)
-	marshalled, err := xml.MarshalIndent(request, "", "\t")
-	actual := string(marshalled)
-	// Then
-	assert.Nil(t, err)
-	assert.Equal(t, expected, actual)
-}
-
-func TestRequestMarshalingTwo(t *testing.T) {
-
+		assert.Nil(t, err)
+		assert.Equal(t, expected, actual)
+	})
 }

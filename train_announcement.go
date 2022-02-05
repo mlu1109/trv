@@ -1,10 +1,12 @@
 package trv
 
+import "encoding/json"
+
 type ActivityType string
 
 const (
-	Avgang  ActivityType = "Avgang"
-	Ankomst ActivityType = "Ankomst"
+	Departure ActivityType = "Avgang"
+	Arrival   ActivityType = "Ankomst"
 )
 
 type TrainAnnouncementV16 struct {
@@ -18,13 +20,13 @@ type TrainAnnouncementV16 struct {
 	Deleted                               bool
 	Deviation                             []TrainInformation
 	EstimatedTimeAtLocation               string
-	EstimatedTimeIsPreliminary            string
+	EstimatedTimeIsPreliminary            bool
 	FromLocation                          []LocationInformation
 	InformationOwner                      string
 	LocationSignature                     string
 	MobileWebLink                         string
 	ModifiedTime                          string
-	NewEquipment                          string
+	NewEquipment                          int
 	Operator                              string
 	OtherInformation                      []TrainInformation
 	PlannedEstimatedTimeAtLocation        string
@@ -56,4 +58,22 @@ type LocationInformation struct {
 	LocationName string
 	Order        int
 	Priority     int
+}
+
+func ReadTrainAnnouncementV16(response *Response) ([]TrainAnnouncementV16, error) {
+	var res []TrainAnnouncementV16
+	items := response.Response.Result
+	for _, item := range items {
+		j, err := json.Marshal(item.TrainAnnouncement)
+		if err != nil {
+			return res, err
+		}
+		var tas []TrainAnnouncementV16
+		err = json.Unmarshal(j, &tas)
+		if err != nil {
+			return res, err
+		}
+		res = append(res, tas...)
+	}
+	return res, nil
 }

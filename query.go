@@ -2,7 +2,7 @@ package trv
 
 import "encoding/xml"
 
-type query struct {
+type Query struct {
 	XMLName               xml.Name                  `xml:"QUERY"`
 	SSEURL                bool                      `xml:"sseurl,attr,omitempty"`
 	ObjectType            string                    `xml:"objecttype,attr"`
@@ -14,56 +14,56 @@ type query struct {
 	LastModified          bool                      `xml:"lastmodified,attr,omitempty"`
 	Limit                 int                       `xml:"limit,attr,omitempty"`
 	Skip                  int                       `xml:"skip,attr,omitempty"`
-	Filter                struct{ Filters filters } `xml:"FILTER"`
+	Filter                struct{ Filters Filters } `xml:"FILTER"`
 	Include               []string                  `xml:"INCLUDE,omitempty"`
 }
 
-func (q *query) WithID(id string) *query {
+func (q *Query) WithID(id string) *Query {
 	q.ID = id
 	return q
 }
 
-func (q *query) WithLimit(limit int) *query {
+func (q *Query) WithLimit(limit int) *Query {
 	q.Limit = limit
 	return q
 }
 
-func (q *query) WithIncludDeletedObjects(includeDeletedObjects bool) *query {
+func (q *Query) WithIncludDeletedObjects(includeDeletedObjects bool) *Query {
 	q.IncludeDeletedObjects = includeDeletedObjects
 	return q
 }
 
-func (q *query) WithOrderBy(orderBy string) *query {
+func (q *Query) WithOrderBy(orderBy string) *Query {
 	q.OrderBy = orderBy
 	return q
 }
 
-func (q *query) WithSkip(skip int) *query {
+func (q *Query) WithSkip(skip int) *Query {
 	q.Skip = skip
 	return q
 }
 
-func (q *query) WithLastModified(lastModified bool) *query {
+func (q *Query) WithLastModified(lastModified bool) *Query {
 	q.LastModified = lastModified
 	return q
 }
 
-func (q *query) WithChangeID(changeID int) *query {
+func (q *Query) WithChangeID(changeID int) *Query {
 	q.ChangeID = changeID
 	return q
 }
 
-func (q *query) WithSSEURL(sseURL bool) *query {
+func (q *Query) WithSSEURL(sseURL bool) *Query {
 	q.SSEURL = sseURL
 	return q
 }
 
-func (q *query) AddInclude(field string) *query {
+func (q *Query) AddInclude(field string) *Query {
 	q.Include = append(q.Include, field)
 	return q
 }
 
-func (q *query) NewFilter() *filters {
-	q.Filter = struct{ Filters filters }{}
+func (q *Query) NewFilter() *Filters {
+	q.Filter = struct{ Filters Filters }{}
 	return &q.Filter.Filters
 }

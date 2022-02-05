@@ -3,9 +3,11 @@ Client library written in Go for consuming Trafikverket's api.
 
 ## Scope
 
-This library provides the constructs used for communicating with Trafikverket.
+This library provides the constructs used for communicating with Trafikverket. Currently the client does not support unmarshaling XML responses.
 
 ## Usage
+
+### Bulding the request
 
 The request object is built using a builder-like approach:
 
@@ -35,7 +37,7 @@ func GetExampleRequest(authenticationKey string) *trv.Request {
 	return request
 }
 ```
-Note that methods prefixed with `New` returns new objects while the other methods return the object for which the method was called. Thus, the return value of `NewRequest` and `NewOr` are stored in variables so that they can be used later on. 
+Note that methods prefixed with `New` returns new objects while the other methods return the object for which the method was called on. Thus, the return value of `NewRequest` and `NewOr` are stored in variables so that they can be used later on. 
 
 Marshaling the Request returned by `GetExampleRequest` generates the following xml string:
 ```xml
@@ -62,4 +64,27 @@ Marshaling the Request returned by `GetExampleRequest` generates the following x
     <INCLUDE>ToLocation</INCLUDE>
   </QUERY>
 </REQUEST>
+```
+
+### Using the client
+
+```go
+package main
+
+import "trv"
+
+func GetSomeAnnouncements() []trv.TrainAnnouncementV16 {
+	request := trv.
+		NewRequest("authenticationkey")
+	request.
+		NewQuery("TrainAnnouncement", "1.6").
+		WithLimit(20).
+		NewFilter().
+		AddEQ("LocationSignature", "Cst")
+	response, _ := trv.
+		NewClient().
+		Post(request)
+	items, _ := trv.ReadTrainAnnouncementV16(response)
+	return items
+}
 ```
