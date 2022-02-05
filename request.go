@@ -1,4 +1,4 @@
-package trafikverket
+package trv
 
 import (
 	"encoding/xml"
@@ -9,14 +9,19 @@ type login struct {
 	AuthenticationKey string   `xml:"authenticationkey,attr"`
 }
 
-type request struct {
+type Request struct {
 	XMLName xml.Name `xml:"REQUEST"`
-	Login   login
-	Query   query
+	Login   *login
+	Query   *query
 }
 
-func newRequest(authenticationKey string) *request {
-	return &request{
-		Login: login{AuthenticationKey: authenticationKey},
-	}
+func NewRequest(authenticationKey string) *Request {
+	r := &Request{}
+	r.Login = &login{AuthenticationKey: authenticationKey}
+	return r
+}
+
+func (r *Request) NewQuery(objectType, schemaVersion string) *query {
+	r.Query = &query{ObjectType: objectType, SchemaVersion: schemaVersion}
+	return r.Query
 }

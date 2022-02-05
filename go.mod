@@ -1,4 +1,4 @@
-module trafikverket
+module trv
 
 go 1.16
 

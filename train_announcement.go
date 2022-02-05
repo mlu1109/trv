@@ -1,4 +1,4 @@
-package trafikverket
+package trv
 
 type ActivityType string
 
@@ -45,4 +45,15 @@ type TrainAnnouncementV16 struct {
 	WebLinkName                           string
 	ViaFromLocation                       []LocationInformation
 	ViaToLocation                         []LocationInformation
+}
+
+type TrainInformation struct {
+	Code        string
+	Description string
+}
+
+type LocationInformation struct {
+	LocationName string
+	Order        int
+	Priority     int
 }
