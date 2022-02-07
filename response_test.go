@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUnmarshalResponse(t *testing.T) {
+func TestUnmarshalResponseWithOneItem(t *testing.T) {
 	// Given
 	j := trainAnnouncementResponseJSON
 	// When
@@ -32,4 +32,51 @@ func TestUnmarshalResponse(t *testing.T) {
 	assert.Equal(t, trv.Arrival, last.ActivityType)
 	assert.Equal(t, "4", last.TrackAtLocation)
 	assert.Equal(t, "Ös", last.ToLocation[0].LocationName)
+}
+
+func TestUnmarshalResponseWithTwoItems(t *testing.T) {
+	unpack := func(r trv.ResultItem) []string {
+		tas := r.TrainAnnouncement
+		assert.Equal(t, 1, len(tas))
+		ta := tas[0].(map[string]interface{})
+		assert.Equal(t, 1, len(ta))
+		value, ok := ta["ScheduledDepartureDateTime"]
+		assert.True(t, ok)
+		items := value.([]interface{})
+		var sddts []string
+		for _, item := range items {
+			sddt := item.(string)
+			sddts = append(sddts, sddt)
+		}
+		return sddts
+	}
+	// Given
+	j := trainAnnouncementResponseWithSeveralResultsJSON
+	// When
+	var response trv.Response
+	err := json.Unmarshal([]byte(j), &response)
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len(response.Response.Result))
+	expected := [][]string{
+		{
+			"2022-02-10T00:00:00.000+01:00",
+			"2022-02-11T00:00:00.000+01:00",
+			"2022-02-12T00:00:00.000+01:00",
+			"2022-02-13T00:00:00.000+01:00",
+			"2022-02-14T00:00:00.000+01:00",
+		},
+		{
+			"2022-01-30T00:00:00.000+01:00",
+			"2022-02-04T00:00:00.000+01:00",
+			"2022-02-06T00:00:00.000+01:00",
+			"2022-02-07T00:00:00.000+01:00",
+			"2022-02-08T00:00:00.000+01:00",
+			"2022-02-09T00:00:00.000+01:00",
+		},
+	}
+	for i, resultItem := range response.Response.Result {
+		actual := unpack(resultItem)
+		assert.Equal(t, expected[i], actual)
+	}
 }
