@@ -12,7 +12,7 @@ type Login struct {
 type Request struct {
 	XMLName xml.Name `xml:"REQUEST"`
 	Login   *Login
-	Query   *Query
+	Query   []*Query
 }
 
 func NewRequest(authenticationKey string) *Request {
@@ -22,6 +22,7 @@ func NewRequest(authenticationKey string) *Request {
 }
 
 func (r *Request) NewQuery(objectType, schemaVersion string) *Query {
-	r.Query = &Query{ObjectType: objectType, SchemaVersion: schemaVersion}
-	return r.Query
+	query := &Query{ObjectType: objectType, SchemaVersion: schemaVersion}
+	r.Query = append(r.Query, query)
+	return query
 }

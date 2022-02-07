@@ -1387,3 +1387,38 @@ const trainAnnouncementResponseJSON = `
 	}
   }
 `
+const trainAnnouncementResponseWithSeveralResultsJSON = `
+{
+  "RESPONSE": {
+    "RESULT": [
+      {
+        "TrainAnnouncement": [
+          {
+            "ScheduledDepartureDateTime": [
+              "2022-02-10T00:00:00.000+01:00",
+              "2022-02-11T00:00:00.000+01:00",
+              "2022-02-12T00:00:00.000+01:00",
+              "2022-02-13T00:00:00.000+01:00",
+              "2022-02-14T00:00:00.000+01:00"
+            ]
+          }
+        ]
+      },
+      {
+        "TrainAnnouncement": [
+          {
+            "ScheduledDepartureDateTime": [
+              "2022-01-30T00:00:00.000+01:00",
+              "2022-02-04T00:00:00.000+01:00",
+              "2022-02-06T00:00:00.000+01:00",
+              "2022-02-07T00:00:00.000+01:00",
+              "2022-02-08T00:00:00.000+01:00",
+              "2022-02-09T00:00:00.000+01:00"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+`
