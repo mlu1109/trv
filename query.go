@@ -16,6 +16,7 @@ type Query struct {
 	Skip                  int                       `xml:"skip,attr,omitempty"`
 	Filter                struct{ Filters Filters } `xml:"FILTER"`
 	Include               []string                  `xml:"INCLUDE,omitempty"`
+	Distinct              []string                  `xml:"DISTINCT,omitempty"`
 }
 
 func (q *Query) WithID(id string) *Query {
@@ -60,6 +61,11 @@ func (q *Query) WithSSEURL(sseURL bool) *Query {
 
 func (q *Query) AddInclude(field string) *Query {
 	q.Include = append(q.Include, field)
+	return q
+}
+
+func (q *Query) AddDistinct(field string) *Query {
+	q.Distinct = append(q.Distinct, field)
 	return q
 }
 
