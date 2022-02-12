@@ -37,8 +37,8 @@ type ResultItem struct {
 }
 
 type Error struct {
-	Source  string `json:"SOURCE,omitempty" xml:"SOURCE,omitempty"`
-	Message string `json:"MESSAGE,omitempty" xml:"MESSAGE,omitempty"`
+	Source  string `json:"SOURCE,omitempty"`
+	Message string `json:"MESSAGE,omitempty"`
 }
 
 type Info struct {
