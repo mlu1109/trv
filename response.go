@@ -42,4 +42,11 @@ type Error struct {
 }
 
 type Info struct {
+	LastChangeID string      `json:"LASTCHANGEID,omitempty"`
+	EvalResult   interface{} `json:"EVALRESULT,omitempty"`
+	SSEURL       string      `json:"SSEURL,omitempty"`
+
+	LastModified struct {
+		DateTime string `json:"_attr_datetime"`
+	} `json:"LASTMODIFIED,omitempty"`
 }
