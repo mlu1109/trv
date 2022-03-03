@@ -11,11 +11,22 @@ import (
 )
 
 type Client struct {
-	url string
+	url    string
+	client *http.Client
 }
 
-func NewClient() *Client {
-	return &Client{url: "https://api.trafikinfo.trafikverket.se/v2/data.json"}
+func NewDefaultClient() *Client {
+	return &Client{
+		url:    "https://api.trafikinfo.trafikverket.se/v2/data.json",
+		client: http.DefaultClient,
+	}
+}
+
+func NewClient(client *http.Client) *Client {
+	return &Client{
+		url:    "https://api.trafikinfo.trafikverket.se/v2/data.json",
+		client: client,
+	}
 }
 
 func (c *Client) WithURL(url string) *Client {
@@ -28,8 +39,12 @@ func (c *Client) Post(r *Request) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	reqBody := bytes.NewReader(xml)
-	resp, err := http.Post(c.url, "text/xml", reqBody)
+	req, err := http.NewRequest("POST", c.url, bytes.NewReader(xml))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("Content-Type", "text/xml")
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}

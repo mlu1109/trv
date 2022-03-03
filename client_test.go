@@ -24,7 +24,7 @@ func TestClientIntegrationTests(t *testing.T) {
 			AddEQ("LocationSignature", "Cst")
 		// When
 		response, err := trv.
-			NewClient().
+			NewDefaultClient().
 			Post(request)
 		// Then ...
 		// ... response is OK
@@ -54,7 +54,7 @@ func TestClientIntegrationTests(t *testing.T) {
 			AddEQ("LocationSignature", "Cst")
 		// When
 		response, err := trv.
-			NewClient().
+			NewDefaultClient().
 			Post(request)
 		// Then ...
 		// ... response is OK
